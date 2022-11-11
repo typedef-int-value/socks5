@@ -25,10 +25,15 @@ static int reponse_method(socks5_t *socks5, unsigned char method) {
   else
     return -1;
 }
+static uint16_t swap_uint16( uint16_t val )
+{
+  return (val << 8) | (val >> 8 );
+}
 
 static int request_method_dependent(socks5_t *socks5) {
   uint32_t lenght = 0;
   unsigned char msg[512] = {0};
+  uint16_t port_big = swap_uint16(socks5->port);
   msg[0] = 0x05;
   msg[1] = socks5->command;
   msg[2] = 0x00;
@@ -38,8 +43,7 @@ static int request_method_dependent(socks5_t *socks5) {
     msg[5] = socks5->ipv4[1];
     msg[6] = socks5->ipv4[2];
     msg[7] = socks5->ipv4[3];
-    msg[8] = 0;
-    msg[9] = 0;
+    memcpy(&msg[8], &port_big, 2);
     lenght = 10;
   } else if (socks5->domainName != NULL) {
     msg[3] = 0x03;

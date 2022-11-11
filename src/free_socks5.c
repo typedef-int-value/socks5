@@ -1,6 +1,7 @@
 #include "socks5.h"
 
-void free_socks5(socks5_t *socks5) {
+void free_socks5(socks5_t* socks5)
+{
   if (socks5->domainName != NULL)
     free(socks5->domainName);
   socks5->fd = -1;
